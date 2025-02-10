@@ -1,0 +1,5 @@
+FROM unbindapp/builder-base:latest
+
+COPY ./cmd/builder /app/builder
+
+CMD ["/app/builder"]
