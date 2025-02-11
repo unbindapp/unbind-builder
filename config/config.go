@@ -19,6 +19,8 @@ type Config struct {
 	ContainerRegistryHost string `env:"CONTAINER_REGISTRY_HOST,required" envDefault:"docker-registry.unbind:5000"`
 	// Docker host because nixpacks ignores the variable https://github.com/railwayapp/nixpacks/issues/1194
 	DockerHost string `env:"DOCKER_HOST" envDefault:"unix:///var/run/docker.sock"`
+	// Deployment namespace (kubernetes)
+	DeploymentNamespace string `env:"DEPLOYMENT_NAMESPACE" envDefault:"unbind-user"`
 }
 
 // Parse environment variables into a Config struct

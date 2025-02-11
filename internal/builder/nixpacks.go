@@ -15,9 +15,9 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
-func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
+func (b *Builder) BuildWithNixpacks() (imageName, repoName string, err error) {
 	// -- Generate image name
-	repoName, err := utils.ExtractRepoName(b.config.GitRepoURL)
+	repoName, err = utils.ExtractRepoName(b.config.GitRepoURL)
 	if err != nil {
 		log.Warnf("Failed to extract repository name: %v", err)
 		repoName = fmt.Sprintf("unbind-build-%d", time.Now().Unix())
@@ -27,14 +27,14 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 	// -- Generate github tokens/create client
 	ghHelper, err := github.NewGithubClient(b.config)
 	if err != nil {
-		return "", fmt.Errorf("failed to create GitHub client: %v", err)
+		return "", repoName, fmt.Errorf("failed to create GitHub client: %v", err)
 	}
 
 	// -- Clone repository
 	// Create a temporary directory for cloning the repository.
 	tmpDir, err := os.MkdirTemp("", "nixpacks-build-")
 	if err != nil {
-		return "", fmt.Errorf("failed to create temporary directory: %v", err)
+		return "", repoName, fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 	log.Infof("Created temporary directory: %s", tmpDir)
 	// Clean up the temporary directory when done.
@@ -52,7 +52,7 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 	})
 
 	if err != nil {
-		return "", fmt.Errorf("failed to clone repository: %v", err)
+		return "", repoName, fmt.Errorf("failed to clone repository: %v", err)
 	}
 
 	// --- Nixpacks build
@@ -65,5 +65,5 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 	}
 
 	log.Infof("Built image %s", outputImage)
-	return outputImage, nil
+	return outputImage, repoName, nil
 }
