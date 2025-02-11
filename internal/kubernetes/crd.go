@@ -123,6 +123,7 @@ func (k *KubernetesUtil) DeployImage(repoName, image string) (*unstructured.Unst
 			"spec": map[string]interface{}{
 				"image":           image,
 				"domain":          fmt.Sprintf("%s.unbind.app", strings.ReplaceAll(repoName, "_", "-")),
+				"port":            3000, // ! TODO - hardcoded
 				"imagePullSecret": "regcred",
 			},
 		},
