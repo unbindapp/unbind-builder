@@ -84,4 +84,4 @@ jobs:
           platforms: linux/arm64
           push: true
           file: ./Dockerfile.ci
-          tags: appditto/unbind-builder:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}
+          tags: unbindapp/unbind-builder:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}
