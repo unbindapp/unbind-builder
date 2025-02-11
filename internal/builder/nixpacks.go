@@ -57,7 +57,7 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 
 	// --- Nixpacks build
 	log.Infof("Running nixpacks build in directory: %s", tmpDir)
-	buildCmd := exec.Command("nixpacks", "build", tmpDir, "--tag", outputImage)
+	buildCmd := exec.Command("nixpacks", "build", tmpDir, "--tag", outputImage, "--docker-host", b.config.DockerHost)
 	buildCmd.Stdout = os.Stdout
 	buildCmd.Stderr = os.Stderr
 	if err := buildCmd.Run(); err != nil {
