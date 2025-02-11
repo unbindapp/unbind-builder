@@ -39,7 +39,7 @@ func (k *KubernetesUtil) DeployImage(repoName, image string) (*unstructured.Unst
 
 	// Retrieve registry credentials from configuration or use defaults.
 	username := k.config.ContainerRegistryUser
-	password := k.config.ContainerRegistryUser
+	password := k.config.ContainerRegistryPassword
 
 	// Create the docker config JSON for authenticating to the registry.
 	// The structure follows:
