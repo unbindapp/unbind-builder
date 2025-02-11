@@ -11,6 +11,7 @@ import (
 	"github.com/unbindapp/unbind-builder/internal/utils"
 
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
@@ -45,6 +46,7 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 			Username: "x-access-token",
 			Password: ghHelper.InstallationToken.GetToken(),
 		},
+		ReferenceName: plumbing.ReferenceName(b.config.GitBranch),
 	})
 
 	if err != nil {
