@@ -16,7 +16,7 @@ type Config struct {
 	// GITHUB private key, needed to authenticate
 	GithubPrivateKey string `env:"GITHUB_PRIVATE_KEY_PATH,required" envDefault:"/etc/github/private-key"`
 	// Registry specific
-	ContainerRegistryHost string `env:"CONTAINER_REGISTRY_HOST,required" envDefault:"docker-registry.unbind:5000"`
+	ContainerRegistryHost string `env:"CONTAINER_REGISTRY_HOST,required" envDefault:"docker-registry.unbind-system:5000"`
 	// Docker host because nixpacks ignores the variable https://github.com/railwayapp/nixpacks/issues/1194
 	DockerHost string `env:"DOCKER_HOST" envDefault:"unix:///var/run/docker.sock"`
 	// Deployment namespace (kubernetes)
