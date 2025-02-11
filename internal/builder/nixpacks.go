@@ -40,13 +40,15 @@ func (b *Builder) BuildWithNixpacks() (imageName string, err error) {
 	// Clean up the temporary directory when done.
 	defer os.RemoveAll(tmpDir)
 
+	log.Infof("Cloning ref '%s' from '%s'", b.config.GitRef, b.config.GitRepoURL)
+
 	_, err = git.PlainClone(tmpDir, false, &git.CloneOptions{
 		URL: b.config.GitRepoURL,
 		Auth: &http.BasicAuth{
 			Username: "x-access-token",
 			Password: ghHelper.InstallationToken.GetToken(),
 		},
-		ReferenceName: plumbing.ReferenceName(b.config.GitBranch),
+		ReferenceName: plumbing.ReferenceName(b.config.GitRef),
 	})
 
 	if err != nil {

@@ -12,7 +12,7 @@ type Config struct {
 	// Repository to clone (github, https)
 	GitRepoURL string `env:"GITHUB_REPO_URL,required"`
 	// Branch to checkout and build
-	GitBranch string `env:"GIT_BRANCH,required" envDefault:"master"`
+	GitRef string `env:"GIT_REF,required"`
 	// GITHUB private key, needed to authenticate
 	GithubPrivateKey string `env:"GITHUB_PRIVATE_KEY_PATH,required" envDefault:"/etc/github/private-key"`
 	// Registry specific
