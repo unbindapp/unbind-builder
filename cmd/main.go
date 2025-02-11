@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// Push to registry
-	if err := registry.PushImageToRegistry(dockerImg); err != nil {
+	if err := registry.PushImageToRegistry(dockerImg, cfg); err != nil {
 		log.Fatalf("Failed to push to registry: %v", err)
 	}
 
