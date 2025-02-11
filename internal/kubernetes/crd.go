@@ -131,6 +131,22 @@ func (k *KubernetesUtil) DeployImage(repoName, image string) (*unstructured.Unst
 	// Create the custom resource in the target namespace.
 	createdCR, err := k.client.Resource(appGVR).Namespace(secretNamespace).Create(ctx, appCR, metav1.CreateOptions{})
 	if err != nil {
+		// If the resource already exists, update it.
+		if apierrors.IsAlreadyExists(err) {
+			// Retrieve the existing resource.
+			existingCR, getErr := k.client.Resource(appGVR).Namespace(secretNamespace).Get(ctx, appCR.GetName(), metav1.GetOptions{})
+			if getErr != nil {
+				return nil, fmt.Errorf("failed to retrieve existing resource: %v", getErr)
+			}
+			// Set the resourceVersion on the object to be updated.
+			appCR.SetResourceVersion(existingCR.GetResourceVersion())
+
+			updatedCR, updateErr := k.client.Resource(appGVR).Namespace(secretNamespace).Update(ctx, appCR, metav1.UpdateOptions{})
+			if updateErr != nil {
+				return nil, fmt.Errorf("failed to update custom resource: %v", updateErr)
+			}
+			return updatedCR, nil
+		}
 		return nil, fmt.Errorf("failed to create custom resource: %v", err)
 	}
 
