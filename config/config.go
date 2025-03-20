@@ -24,7 +24,7 @@ type Config struct {
 	// Deployment namespace (kubernetes)
 	DeploymentNamespace string `env:"DEPLOYMENT_NAMESPACE" envDefault:"unbind-user"`
 	// Service specific
-	ServiceRuntime    string  `env:"SERVICE_RUNTIME"`
+	ServiceProvider   string  `env:"SERVICE_PROVIDER"`
 	ServiceFramework  string  `env:"SERVICE_FRAMEWORK"`
 	ServicePublic     *bool   `env:"SERVICE_PUBLIC"`
 	ServicePort       *int32  `env:"SERVICE_PORT"`

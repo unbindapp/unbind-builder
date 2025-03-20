@@ -82,7 +82,7 @@ func (self *KubernetesUtil) DeployImage(ctx context.Context, repoName, image str
 				// Service classification
 				"type":      "git",
 				"builder":   "railpack",
-				"runtime":   self.config.ServiceRuntime,
+				"provider":  self.config.ServiceProvider,
 				"framework": self.config.ServiceFramework,
 
 				// Relations - may need to be configured appropriately for your environment
