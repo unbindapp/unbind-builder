@@ -17,10 +17,10 @@ type GitHubHelper struct {
 }
 
 func NewGithubClient(config *config.Config) (*GitHubHelper, error) {
-	// Load pem file for github app
-	privateKey, err := utils.LoadPrivateKeyFromFile(config.GithubPrivateKey)
+	// Decode private key
+	privateKey, err := utils.DecodePrivateKey(config.GithubAppPrivateKey)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load github private key: %v", err)
+		return nil, err
 	}
 
 	// Get token

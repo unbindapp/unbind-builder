@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"os"
+
 	"github.com/joho/godotenv"
 	"github.com/unbindapp/unbind-builder/config"
 	"github.com/unbindapp/unbind-builder/internal/builder"
@@ -10,30 +13,35 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	cfg := config.NewConfig()
-
-	builder := builder.NewBuilder(
-		cfg,
-	)
-
-	kubernetesUtil := kubernetes.NewKubernetesUtil(cfg)
-
-	dockerImg, repoName, err := builder.BuildWithNixpacks()
-	if err != nil {
-		log.Fatalf("Failed to build with nixpacks: %v", err)
+	if err := godotenv.Load(); err != nil {
+		log.Warnf("Failed to load .env file: %v", err)
 	}
 
-	// Push to registry
-	if err := registry.PushImageToRegistry(dockerImg, cfg); err != nil {
+	cfg := config.NewConfig()
+	os.Setenv("BUILDKIT_HOST", cfg.BuildkitHost)
+
+	builder := builder.NewBuilder(cfg)
+	kubernetesUtil := kubernetes.NewKubernetesUtil(cfg)
+
+	// Build with context
+	dockerImg, repoName, err := builder.BuildWithRailpack()
+	if err != nil {
+		log.Fatalf("Failed to build with railpack: %v", err)
+	}
+
+	// Push to registry with context
+	if err := registry.PushImageToRegistry(ctx, dockerImg, cfg); err != nil {
 		log.Fatalf("Failed to push to registry: %v", err)
 	}
 
-	// Deploy to kubernetes
-	createdCRD, err := kubernetesUtil.DeployImage(repoName, dockerImg)
+	// Deploy to kubernetes with context
+	createdCRD, err := kubernetesUtil.DeployImage(ctx, repoName, dockerImg)
 	if err != nil {
 		log.Fatalf("Failed to deploy image: %v", err)
 	}
+
 	log.Infof("Created CRD: %v", createdCRD)
 }

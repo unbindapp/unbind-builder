@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,7 +12,7 @@ import (
 )
 
 // Executes docker push
-func PushImageToRegistry(image string, cfg *config.Config) error {
+func PushImageToRegistry(ctx context.Context, image string, cfg *config.Config) error {
 	// Extract registry host from the image name.
 	// This assumes that the image is prefixed with the registry host.
 	// e.g., "unbind-registry.unbind.app/my-image:tag"

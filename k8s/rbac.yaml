@@ -6,11 +6,8 @@ kind: ClusterRole
 metadata:
   name: app-crd-creator
 rules:
-- apiGroups: ["app.unbind.cloud"]
-  resources: ["apps"]
-  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
-- apiGroups: [""]  # "" indicates the core API group
-  resources: ["secrets"]
+- apiGroups: ["unbind.unbind.ap"]
+  resources: ["services"]
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
 ---
 # clusterrolebinding.yaml
