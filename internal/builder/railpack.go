@@ -16,7 +16,7 @@ import (
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/http"
 )
 
-func (self *Builder) BuildWithRailpack() (imageName, repoName string, err error) {
+func (self *Builder) BuildWithRailpack(buildSecrets map[string]string) (imageName, repoName string, err error) {
 	// -- Generate image name
 	repoName, err = utils.ExtractRepoName(self.config.GitRepoURL)
 	if err != nil {
@@ -57,7 +57,7 @@ func (self *Builder) BuildWithRailpack() (imageName, repoName string, err error)
 	}
 
 	// --- Railpack build
-	buildResult, app, _, err := GenerateBuildResult(tmpDir)
+	buildResult, app, _, err := GenerateBuildResult(tmpDir, buildSecrets)
 	if err != nil {
 		return "", repoName, fmt.Errorf("failed to generate build result: %v", err)
 	}
@@ -78,7 +78,7 @@ func (self *Builder) BuildWithRailpack() (imageName, repoName string, err error)
 		ProgressMode: "tty",
 		CacheKey:     repoName,
 		SecretsHash:  "",
-		Secrets:      map[string]string{},
+		Secrets:      buildSecrets,
 		Platform:     platform,
 	})
 	if err != nil {
@@ -89,7 +89,7 @@ func (self *Builder) BuildWithRailpack() (imageName, repoName string, err error)
 	return outputImage, repoName, nil
 }
 
-func GenerateBuildResult(directory string) (*core.BuildResult, *a.App, *a.Environment, error) {
+func GenerateBuildResult(directory string, buildSecrets map[string]string) (*core.BuildResult, *a.App, *a.Environment, error) {
 	app, err := a.NewApp(directory)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("error creating app: %w", err)
@@ -97,19 +97,15 @@ func GenerateBuildResult(directory string) (*core.BuildResult, *a.App, *a.Enviro
 
 	log.Infof("Building %s", app.Source)
 
-	// ! TODO - Implement build level environment variables
-	// envsArgs := cmd.StringSlice("env")
-
-	// env, err := a.FromEnvs(envsArgs)
-	// if err != nil {
-	// 	return nil, nil, nil, fmt.Errorf("error creating env: %w", err)
-	// }
+	env := a.Environment{
+		Variables: buildSecrets,
+	}
 
 	generateOptions := &core.GenerateBuildPlanOptions{
 		RailpackVersion: "unbind-builder", // ! Add a version
 	}
 
-	buildResult := core.GenerateBuildPlan(app, &a.Environment{}, generateOptions)
+	buildResult := core.GenerateBuildPlan(app, &env, generateOptions)
 
-	return buildResult, app, nil, nil
+	return buildResult, app, &env, nil
 }

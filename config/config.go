@@ -24,13 +24,14 @@ type Config struct {
 	// Deployment namespace (kubernetes)
 	DeploymentNamespace string `env:"DEPLOYMENT_NAMESPACE" envDefault:"unbind-user"`
 	// Service specific
-	ServiceProvider   string  `env:"SERVICE_PROVIDER"`
-	ServiceFramework  string  `env:"SERVICE_FRAMEWORK"`
-	ServicePublic     *bool   `env:"SERVICE_PUBLIC"`
-	ServicePort       *int32  `env:"SERVICE_PORT"`
-	ServiceHost       *string `env:"SERVICE_HOST"`
-	ServiceReplicas   *int32  `env:"SERVICE_REPLICAS"`
-	ServiceSecretName string  `env:"SERVICE_SECRET_NAME,required"`
+	ServiceProvider     string  `env:"SERVICE_PROVIDER"`
+	ServiceFramework    string  `env:"SERVICE_FRAMEWORK"`
+	ServicePublic       *bool   `env:"SERVICE_PUBLIC"`
+	ServicePort         *int32  `env:"SERVICE_PORT"`
+	ServiceHost         *string `env:"SERVICE_HOST"`
+	ServiceReplicas     *int32  `env:"SERVICE_REPLICAS"`
+	ServiceSecretName   string  `env:"SERVICE_SECRET_NAME,required"`
+	ServiceBuildSecrets string  `env:"SERVICE_BUILD_SECRETS"`
 	// Kubeconfig for local testing
 	KubeConfig string `env:"KUBECONFIG"`
 }

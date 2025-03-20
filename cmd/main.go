@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -26,8 +29,27 @@ func main() {
 	builder := builder.NewBuilder(cfg)
 	kubernetesUtil := kubernetes.NewKubernetesUtil(cfg)
 
+	// Parse secrets from env
+	serializableSecrets := make(map[string]string)
+	buildSecrets := make(map[string]string)
+	if cfg.ServiceBuildSecrets != "" {
+		if err := json.Unmarshal([]byte(cfg.ServiceBuildSecrets), &serializableSecrets); err != nil {
+			log.Fatalf("Failed to parse secrets: %v", err)
+		}
+
+		// Convert back to map[string][]byte
+		for k, v := range serializableSecrets {
+			data, err := base64.StdEncoding.DecodeString(v)
+			if err != nil {
+				fmt.Printf("Error decoding secret %s: %v\n", k, err)
+				continue
+			}
+			buildSecrets[k] = string(data)
+		}
+	}
+
 	// Build with context
-	dockerImg, repoName, err := builder.BuildWithRailpack()
+	dockerImg, repoName, err := builder.BuildWithRailpack(buildSecrets)
 	if err != nil {
 		log.Fatalf("Failed to build with railpack: %v", err)
 	}
