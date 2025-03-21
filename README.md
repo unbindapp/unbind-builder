@@ -1,6 +1,8 @@
 # unbind-builder
 
-One off jobs for building code bases. ...
+![GitHub License](https://img.shields.io/github/license/unbindapp/unbind-builder) ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/unbindapp/unbind-builder)
+
+Unbind build container image.
 
 # Run a BuildKit instance as a container
 
